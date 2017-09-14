@@ -188,7 +188,7 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.controls = function controls() {
-    return true;
+    return false;
   };
 
   Vimeo.prototype.supportsFullScreen = function supportsFullScreen() {
@@ -229,6 +229,7 @@ var Vimeo = function (_Tech) {
 
   Vimeo.prototype.buffered = function buffered() {
     var progress = this._vimeoState.progress;
+
     return _video2.default.createTimeRange(0, progress.buffered);
   };
 

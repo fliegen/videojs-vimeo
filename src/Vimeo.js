@@ -157,7 +157,7 @@ class Vimeo extends Tech {
   }
 
   controls() {
-    return true;
+    return false;
   }
 
   supportsFullScreen() {

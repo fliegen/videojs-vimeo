@@ -34,7 +34,8 @@
   "browserify-shim": {
     "qunit": "global:QUnit",
     "sinon": "global:sinon",
-    "video.js": "global:videojs"
+    "video.js": "global:videojs",
+    "@vimeo/player": "global:Vimeo.Player"
   },
   "style": "dist/videojs-vimeo.css",
   "videojs-plugin": {
