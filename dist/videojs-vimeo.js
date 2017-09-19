@@ -148,7 +148,11 @@ var Vimeo = function (_Tech) {
       _this2._vimeoState.ended = true;
     });
     this._player.on('volumechange', function (v) {
-      return _this2._vimeoState.volume = v;
+      v = v.volume;
+      _this2._vimeoState.volume = v;
+      if (v >= 0.1) {
+        _this2._vimeoState.lastVolume = v;
+      }
     });
     this._player.on('error', function (e) {
       return _this2.trigger('error', e);
@@ -162,6 +166,7 @@ var Vimeo = function (_Tech) {
       ended: false,
       playing: false,
       volume: 0,
+      lastVolume: 0,
       progress: {
         seconds: 0,
         percent: 0,
@@ -180,7 +185,7 @@ var Vimeo = function (_Tech) {
       return state.playing = !paused;
     });
     this._player.getVolume().then(function (volume) {
-      return state.volume = volume;
+      return state.volume = state.lastVolume = volume;
     });
   };
 
@@ -263,8 +268,18 @@ var Vimeo = function (_Tech) {
 
   // Vimeo does has a mute API and native controls aren't being used,
   // so setMuted doesn't really make sense and shouldn't be called.
-  // setMuted(mute) {}
 
+
+  Vimeo.prototype.setMuted = function setMuted(mute) {
+    if (mute) {
+      this.setVolume(0);
+    } else {
+      this.setVolume(this._vimeoState.lastVolume);
+    }
+    this.setTimeout(function () {
+      this.trigger('volumechange');
+    }, 50);
+  };
 
   return Vimeo;
 }(Tech);
