@@ -106,6 +106,9 @@ class Vimeo extends Tech {
           if (progress.seconds > this._vimeoState.progress.buffered) {
             this._vimeoState.progress.buffered = progress.seconds;
           }
+          if (e === 'seeked') {
+            this._vimeoState.seeking = false;
+          }
         }
         this.trigger(e);
       });
@@ -136,6 +139,7 @@ class Vimeo extends Tech {
     const state = this._vimeoState = {
       ended: false,
       playing: false,
+      seeking: false,
       volume: 0,
       lastVolume: 0,
       progress: {
@@ -157,7 +161,7 @@ class Vimeo extends Tech {
       id: this.options_.techId
     });
 
-    div.style.cssText = 'width:100%;height:100%;top:0;left:0;position:absolute';
+    div.style.cssText = 'position: relative;padding-top: 200%;transform: translateY(-64.1%);';
     div.className = 'vjs-vimeo';
 
     return div;
@@ -168,7 +172,9 @@ class Vimeo extends Tech {
   }
 
   supportsFullScreen() {
-    return true;
+    return document.webkitFullscreenEnabled ||
+           document.mozFullScreenEnabled ||
+           document.msFullscreenEnabled;
   }
 
   src() {
@@ -188,6 +194,8 @@ class Vimeo extends Tech {
   }
 
   setCurrentTime(time) {
+    this._vimeoState.seeking = true;
+    this.trigger('seeking');
     this._player.setCurrentTime(time);
   }
 
@@ -240,6 +248,10 @@ class Vimeo extends Tech {
     this.setTimeout(function() {
       this.trigger('volumechange');
     }, 50);
+  }
+
+  seeking() {
+    return this._vimeoState.seeking;
   }
 }
 
